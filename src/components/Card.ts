@@ -1,4 +1,5 @@
-import { ICard, ICardActions } from '../types';
+import { ICard, TCardBasket } from './../types/index';
+import { ICardActions } from '../types';
 import { ensureElement } from '../utils/utils';
 import { Component } from './base/Component';
 
@@ -14,13 +15,13 @@ export class Card extends Component<ICard> {
 		super(container);
 
 		this._title = ensureElement<HTMLElement>(`.card__title`, container);
-		this._image = ensureElement<HTMLImageElement>(`.card__image`, container);
-		this._button = container.querySelector(`.card__button`);
+		this._price = ensureElement<HTMLSpanElement>(`.card__price`, container);
 		this._category = container.querySelector(`.card__category`);
-		this._price = container.querySelector(`.card__price`);
+		this._button = container.querySelector(`.card__button`);
+		this._image = container.querySelector(`.card__image`);
 		this._description = container.querySelector(`.card__text`);
 
-		if (actions.onClick) {
+		if (actions?.onClick) {
 			if (this._button) {
 				this._button.addEventListener('click', actions.onClick);
 			} else {
@@ -66,7 +67,7 @@ export class Card extends Component<ICard> {
 	}
 
 	set image(value: string) {
-		this.setImage(this._image, value, String(this._title));
+		this.setImage(this._image, value, this.title);
 	}
 
 	set category(value: string) {
@@ -74,11 +75,11 @@ export class Card extends Component<ICard> {
 	}
 
 	get category() {
-		return;
+		return this._category.textContent || '';
 	}
 
-	set buttonText(value: string) {
-		this.setText(this._button, value);
+	set button(value: string) {
+		this._button.textContent = value;
 	}
 }
 
@@ -97,8 +98,11 @@ export class BasketCard extends Card {
 			`.basket__item-delete`,
 			container
 		);
+		if (actions && actions.onClick) {
+			this._deleteButton.addEventListener('click', actions.onClick);
+		}
 	}
-	set index(value: string) {
+	set index(value: number) {
 		this.setText(this._index, value);
 	}
 }

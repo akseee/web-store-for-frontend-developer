@@ -1,7 +1,7 @@
-import { IBasket } from "../../types";
-import { ensureElement } from "../../utils/utils";
-import { Component } from "../base/Component";
-import { EventEmitter, IEvents } from "../base/EventsEmitter";
+import { IBasket } from '../../types';
+import { createElement, ensureElement } from '../../utils/utils';
+import { Component } from '../base/Component';
+import { IEvents } from '../base/EventsEmitter';
 
 export class Basket extends Component<IBasket> {
 	protected _list: HTMLElement;
@@ -17,20 +17,24 @@ export class Basket extends Component<IBasket> {
 
 		if (this._button) {
 			this._button.addEventListener('click', () => {
-				events.emit('');
+				events.emit('order:open');
 			});
 		}
 
-		// this.items = [];
+		this.items = [];
 	}
 
-	// set items(items: HTMLElement[]) {
-	//   this
-	// }
+	set items(items: HTMLElement[]) {
+		if (items.length) {
+			this._list.replaceChildren(...items);
+			this.setDisabled(this._button, false);
+		} else {
+			this._list.replaceChildren(createElement('p', { textContent: 'Пусто' }));
+			this.setDisabled(this._button, true);
+		}
+	}
 
-	// set sum(total: number) {
-	//   this
-	// }
-
-	// get sum() {}
+	set sum(total: number) {
+		this.setText(this._sum, `${total} синапсов`);
+	}
 }

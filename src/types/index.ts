@@ -6,20 +6,6 @@ export interface ILarekAPI {
 	orderItems(order: IOrder): Promise<IOrderResults>;
 }
 
-// Интерфейс для модели данных страницы
-export interface IAppState {
-	list: ICard[];
-	preview: string | null;
-	basket: ICard[];
-	order: IOrder | null;
-	setCatalog(): void;
-	setPreview(): void;
-	toggleOrdereditem(): void;
-	getTotal(): number;
-	clearBasket(): void;
-	validateOrder(): void;
-}
-
 // Работа с карточками
 // Карточка
 export interface ICard {
@@ -29,6 +15,7 @@ export interface ICard {
 	description: string;
 	image: string;
 	category: CardCategory;
+	button: string;
 }
 
 export interface ICardActions {
@@ -70,20 +57,19 @@ export interface IOrder {
 	email: string;
 	phone: string;
 	address: string;
-	payment: PaymentMethod;
+	payment: string;
 }
 
 // Тип оплаты заказа
 export type PaymentMethod = 'онлайн' | '' | 'при получении';
 
 // Тип для заказа с формой способа оплаты и адреса
-export type TOrderPayment = Pick<IOrder, 'payment' | 'address'> & {
-	handlePaymentMethod(): void;
-};
+export type TOrderPayment = Pick<IOrder, 'payment' | 'address'>;
 
 // Тип для заказа с формой почты и телефона
 export type TOrderContacts = Pick<IOrder, 'email' | 'phone'>;
 
+export type TOrderField = TOrderContacts & TOrderPayment;
 // Интерфейс выполнения успешной операции
 export interface IOrderResults {
 	id: string;
@@ -110,8 +96,6 @@ export interface IForm {
 // Интерфейс компонента модального окна
 export interface IModalData {
 	content: HTMLElement;
-	open(): void;
-	close(): void;
 }
 
 // Интерфейс компонента успешного оформления заказа
