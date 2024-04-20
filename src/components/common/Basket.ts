@@ -29,7 +29,9 @@ export class Basket extends Component<IBasket> {
 			this._list.replaceChildren(...items);
 			this.setDisabled(this._button, false);
 		} else {
-			this._list.replaceChildren(createElement('p', { textContent: 'Пусто' }));
+			this._list.replaceChildren(
+				createElement('p', { textContent: 'Товары еще не добавлены в корзину' })
+			);
 			this.setDisabled(this._button, true);
 		}
 	}

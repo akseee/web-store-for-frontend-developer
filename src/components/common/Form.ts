@@ -1,7 +1,7 @@
-import { IForm } from "../../types";
-import { ensureElement } from "../../utils/utils";
-import { Component } from "../base/Component";
-import { IEvents } from "../base/EventsEmitter";
+import { IForm } from '../../types';
+import { ensureElement } from '../../utils/utils';
+import { Component } from '../base/Component';
+import { IEvents } from '../base/EventsEmitter';
 
 export class Form<T> extends Component<IForm> {
 	protected _submit: HTMLButtonElement;
@@ -16,8 +16,8 @@ export class Form<T> extends Component<IForm> {
 		);
 		this._errors = ensureElement<HTMLElement>('.form__errors', this.container);
 
-		this.container.addEventListener('input', (e: Event) => {
-			const target = e.target as HTMLInputElement;
+		this.container.addEventListener('input', (event: Event) => {
+			const target = event.target as HTMLInputElement;
 			const field = target.name as keyof T;
 			const value = target.value;
 			this.onInputChange(field, value);
@@ -38,7 +38,7 @@ export class Form<T> extends Component<IForm> {
 	}
 
 	protected onInputChange(field: keyof T, value: string) {
-		this.events.emit(`${this.container.name}.${String(field)}:change`, {
+		this.events.emit(`order.${String(field)}:changed`, {
 			field,
 			value,
 		});

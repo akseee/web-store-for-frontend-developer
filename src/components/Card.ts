@@ -1,7 +1,8 @@
 import { ICard, TCardBasket } from './../types/index';
 import { ICardActions } from '../types';
-import { ensureElement } from '../utils/utils';
+import { ensureElement, formatNumber } from '../utils/utils';
 import { Component } from './base/Component';
+import { categories } from '../utils/constants';
 
 export class Card extends Component<ICard> {
 	protected _title: HTMLElement;
@@ -55,7 +56,12 @@ export class Card extends Component<ICard> {
 
 	set price(value: string) {
 		if (value) {
-			this.setText(this._price, `${value} синапсов`);
+			this.setText(
+				this._price,
+				`${
+					value.toString().length <= 4 ? value : formatNumber(Number(value))
+				} синапсов`
+			);
 		} else {
 			this.setText(this._price, `Бесценно`);
 			this.setDisabled(this._button, true);
@@ -72,6 +78,7 @@ export class Card extends Component<ICard> {
 
 	set category(value: string) {
 		this.setText(this._category, value);
+		this.toggleClass(this._category, categories.get(value), true);
 	}
 
 	get category() {

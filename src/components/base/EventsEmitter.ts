@@ -1,5 +1,4 @@
 type EventName = string | RegExp;
-// eslint-disable-next-line @typescript-eslint/ban-types
 type Subscriber = Function;
 type EmitterEvent = {
 	eventName: string;

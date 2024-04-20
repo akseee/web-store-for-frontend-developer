@@ -1,23 +1,12 @@
-import {
-	FormErrors,
-	ICard,
-	IOrder,
-	PaymentMethod,
-	TOrderField,
-} from '../types';
+import { FormErrors, ICard, IOrder, TOrderField } from '../types';
 import { Model } from './base/Model';
 
-// Интерфейс для модели данных страницы
 export interface IAppState {
 	list: ICard[];
 	preview: string | null;
 	basket: ICard[];
 	order: IOrder | null;
 }
-
-export type CatalogChangeEvent = {
-	catalog: ICard[];
-};
 
 export class AppState extends Model<IAppState> {
 	catalog: ICard[] = [];
@@ -35,7 +24,7 @@ export class AppState extends Model<IAppState> {
 
 	setCatalog(items: ICard[]) {
 		items.forEach((item) => (this.catalog = [...this.catalog, item]));
-		this.emitChanges('cards:change', { catalog: this.catalog });
+		this.emitChanges('cards:changed', { catalog: this.catalog });
 	}
 
 	setPreview(item: ICard) {
@@ -44,9 +33,14 @@ export class AppState extends Model<IAppState> {
 	}
 
 	getButtonStatus(item: ICard) {
-		return !this.basket.some((card) => card.id == item.id)
-			? 'В корзину'
-			: 'Убрать';
+		if (item.price === null) {
+			return 'Не для продажи';
+		}
+		if (!this.basket.some((card) => card.id == item.id)) {
+			return 'Добавить в корзину';
+		} else {
+			return 'Убрать из корзины';
+		}
 	}
 
 	toggleBasketCard(item: ICard) {
@@ -63,10 +57,6 @@ export class AppState extends Model<IAppState> {
 	deleteCardFromBasket(item: ICard) {
 		this.basket = this.basket.filter((card) => card.id !== item.id);
 		this.emitChanges('basket:changed');
-	}
-
-	getBasketTotal() {
-		return this.basket.reduce((total, card) => total + card.price, 0);
 	}
 
 	getCardIndex(item: ICard) {
@@ -87,17 +77,18 @@ export class AppState extends Model<IAppState> {
 			address: '',
 			payment: '',
 		};
-		this.emitChanges('order:changed');
 	}
 
 	setBasketToOrder() {
-		this.basket.forEach((card) => {
-			this.order.items = [...(this.order.items + card.id)];
-		});
+		this.order.items = this.basket.map((card) => card.id);
 		this.order.total = this.getBasketTotal();
 	}
 
-	setOrderPayment(value: PaymentMethod | null) {
+	getBasketTotal() {
+		return this.basket.reduce((total, card) => total + card.price, 0);
+	}
+
+	setOrderPayment(value: string) {
 		this.order.payment = value;
 	}
 
@@ -113,18 +104,9 @@ export class AppState extends Model<IAppState> {
 		this.order.email = value;
 	}
 
-	setCardsInOrder() {
-		this.basket.forEach((card) => {
-			this.order.items = [...this.order.items, card.id];
-		});
-		this.order.total = this.getBasketTotal();
-	}
-
 	setOrderField(field: keyof TOrderField, value: string) {
 		this.order[field] = value;
-		if (this.validateOrder()) {
-			this.events.emit('order:ready', this.order);
-		}
+		this.validateOrder();
 	}
 
 	validateOrder() {
@@ -144,7 +126,7 @@ export class AppState extends Model<IAppState> {
 		}
 
 		this.formErrors = errors;
-		this.events.emit('formErrors:change', this.formErrors);
+		this.events.emit('formErrors:changed', this.formErrors);
 		return Object.keys(errors).length === 0;
 	}
 }
