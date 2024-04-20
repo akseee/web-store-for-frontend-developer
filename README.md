@@ -252,3 +252,5 @@ yarn build
 |  `formErrors:change`   | Незаполенные поля форм                                                                 | Вызывает текстовую ошибку и блокирует кнопку                                                                                                                                                                                           |
 
 ## Размещение в сети
+
+https://akseee.github.io/web-larek-frontend/
