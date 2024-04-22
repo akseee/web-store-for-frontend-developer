@@ -1,6 +1,6 @@
-import { PaymentMethod, TOrderContacts, TOrderPayment } from '../../types';
-import { IEvents } from '../base/EventsEmitter';
-import { Form } from './Form';
+import { TOrderContacts, TOrderPayment } from '../types';
+import { IEvents } from './base/EventsEmitter';
+import { Form } from './common/Form';
 
 // @todo сделать оплату
 

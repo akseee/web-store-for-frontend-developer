@@ -6,7 +6,7 @@ import { Page } from './components/Page';
 import { EventEmitter } from './components/base/EventsEmitter';
 import { Basket } from './components/common/Basket';
 import { Modal } from './components/common/Modal';
-import { OrderContacts, OrderPayment } from './components/common/Order';
+import { OrderContacts, OrderPayment } from './components/Order';
 import { Success } from './components/common/Success';
 import { ICard, IOrder } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
@@ -122,6 +122,7 @@ events.on('basket:changed', () => {
 
 // Открытие формы заказа
 events.on('order:open', () => {
+	paymentForm.clearPayment();
 	modal.render({
 		content: paymentForm.render({
 			address: '',
@@ -171,10 +172,11 @@ events.on('contacts:submit', () => {
 			const successWindow = new Success(cloneTemplate(successTemplate), {
 				onClick: () => {
 					modal.close();
-					appData.clearBasket();
-					appData.clearOrder();
 				},
 			});
+			appData.clearBasket();
+			appData.clearOrder();
+
 			modal.render({ content: successWindow.render({ total: result.total }) });
 		})
 		.catch((err) => {

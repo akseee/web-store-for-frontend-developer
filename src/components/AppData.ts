@@ -119,7 +119,7 @@ export class AppState extends Model<IAppState> {
 			errors.phone = `Необходимо указать номер телефона`;
 		}
 		if (!this.order.address) {
-			errors.address = `Необходимо указать адресс`;
+			errors.address = `Необходимо указать адрес`;
 		}
 		if (!this.order.payment) {
 			errors.payment = `Необходимо указать способ оплаты`;
